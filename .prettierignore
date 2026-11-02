@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.wrangler
+pnpm-lock.yaml
+
+# Hand-written docs: keep Prettier from re-aligning tables
+docs
