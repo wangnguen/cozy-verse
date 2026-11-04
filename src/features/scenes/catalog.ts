@@ -88,6 +88,14 @@ export const SCENES: Scene[] = [
     focus: '75% 50%',
   },
   {
+    // Relax with cat, https://www.youtube.com/watch?v=GrG2-oX5z24
+    id: 'relax-with-cat',
+    name: 'Relax with Cat',
+    group: 'study-with-me',
+    kind: 'youtube',
+    videoId: 'GrG2-oX5z24',
+  },
+  {
     id: 'midnight',
     name: 'Midnight',
     group: 'gradient',

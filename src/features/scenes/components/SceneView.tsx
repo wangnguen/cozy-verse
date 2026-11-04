@@ -4,6 +4,7 @@ import { ColorScene } from '../renderers/ColorScene';
 import { GradientScene } from '../renderers/GradientScene';
 import { ImageScene } from '../renderers/ImageScene';
 import { VideoScene } from '../renderers/VideoScene';
+import { YouTubeScene } from '../renderers/YouTubeScene';
 
 export const SceneView = ({ scene }: { scene: Scene }) => {
   switch (scene.kind) {
@@ -15,7 +16,7 @@ export const SceneView = ({ scene }: { scene: Scene }) => {
       return <ImageScene scene={scene} />;
     case 'video':
       return <VideoScene scene={scene} />;
-    default:
-      return null;
+    case 'youtube':
+      return <YouTubeScene scene={scene} />;
   }
 };
