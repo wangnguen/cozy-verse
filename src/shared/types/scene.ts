@@ -10,6 +10,12 @@ type SceneBase = {
 export type Scene =
   | (SceneBase & { kind: 'color'; color: string })
   | (SceneBase & { kind: 'gradient'; gradient: string })
-  | (SceneBase & { kind: 'image'; src: string; thumbnail?: string; focus?: string })
+  | (SceneBase & {
+      kind: 'image';
+      src: string;
+      thumbnail?: string;
+      focus?: string;
+      fit?: 'cover' | 'contain';
+    })
   | (SceneBase & { kind: 'video'; src: string; poster: string })
   | (SceneBase & { kind: 'youtube'; videoId: string });
