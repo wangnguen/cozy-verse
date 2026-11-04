@@ -3,6 +3,7 @@ import { Eye } from 'lucide-react';
 import { BottomSheet } from '@/components/layout/BottomSheet';
 import { WorkspaceLayout } from '@/components/layout/WorkspaceLayout';
 import { Widget } from '@/components/ui/Widget';
+import { SceneLayer } from '@/features/scenes';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 
 import { Dock } from './Dock';
@@ -22,12 +23,7 @@ export const WorkspaceRoot = () => {
   const activeWidget: WidgetDef | undefined = WIDGETS.find((w) => w.id === panel);
 
   return (
-    <WorkspaceLayout
-      zen={zen}
-      scene={<div className="size-full bg-[url(/scenes/test-light.jpg)] bg-cover bg-center" />}
-      topBar={<TopBar />}
-      dock={<Dock />}
-    >
+    <WorkspaceLayout zen={zen} scene={<SceneLayer />} topBar={<TopBar />} dock={<Dock />}>
       <div className="flex h-full items-end p-2 md:items-center md:justify-center md:p-4">
         {!zen &&
           activeWidget &&

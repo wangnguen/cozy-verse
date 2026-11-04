@@ -1,0 +1,15 @@
+export type SceneGroup =
+  'anime' | 'cafe' | 'nature' | 'city' | 'library' | 'study-with-me' | 'gradient' | 'color';
+
+type SceneBase = {
+  id: string;
+  name: string;
+  group: SceneGroup;
+};
+
+export type Scene =
+  | (SceneBase & { kind: 'color'; color: string })
+  | (SceneBase & { kind: 'gradient'; gradient: string })
+  | (SceneBase & { kind: 'image'; src: string })
+  | (SceneBase & { kind: 'video'; src: string; poster: string })
+  | (SceneBase & { kind: 'youtube'; videoId: string });

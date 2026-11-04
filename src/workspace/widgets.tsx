@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 import type { WidgetSize } from '@/components/ui/Widget';
+import { ScenePicker } from '@/features/scenes';
 
 export type WidgetDef = {
   id: string;
@@ -22,7 +23,7 @@ export type WidgetDef = {
 };
 
 export const WIDGETS = [
-  { id: 'scenes', label: 'Scenes', icon: ImageIcon, content: <p>Coming soon</p> },
+  { id: 'scenes', label: 'Scenes', icon: ImageIcon, content: <ScenePicker />, size: 'lg' },
   { id: 'timer', label: 'Timer', icon: Timer, content: <p>Coming soon</p> },
   { id: 'sounds', label: 'Sounds', icon: AudioLines, content: <p>Coming soon</p> },
   { id: 'music', label: 'Music', icon: Music, content: <p>Coming soon</p> },
