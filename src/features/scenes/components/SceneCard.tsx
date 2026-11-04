@@ -2,6 +2,7 @@ import { cn } from 'cn';
 
 import type { Scene } from '@/shared/types/scene';
 
+import { getSceneThumbnail } from '../thumbnail';
 import { SceneView } from './SceneView';
 
 export const SceneCard = ({
@@ -13,6 +14,8 @@ export const SceneCard = ({
   active: boolean;
   onSelect: () => void;
 }) => {
+  const thumbnail = getSceneThumbnail(scene);
+
   return (
     <button
       type="button"
@@ -26,7 +29,19 @@ export const SceneCard = ({
           active && 'ring-1 ring-white/50 ring-offset-2 ring-offset-transparent',
         )}
       >
-        <SceneView scene={scene} />
+        {thumbnail ? (
+          // Decorative: the scene name is already shown below the card
+          <img
+            src={thumbnail}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 size-full object-cover"
+            style={{ objectPosition: scene.kind === 'image' ? scene.focus : undefined }}
+          />
+        ) : (
+          <SceneView scene={scene} />
+        )}
       </div>
       <span className="mt-1 block text-sm">{scene.name}</span>
     </button>

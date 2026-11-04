@@ -8,6 +8,7 @@ export const SCENES: Scene[] = [
     group: 'city',
     kind: 'image',
     src: '/scenes/rainy-tokyo.jpg',
+    thumbnail: '/scenes/thumbnails/rainy-tokyo.jpg',
   },
   {
     // Hamin Yoon, https://unsplash.com/photos/qcjl3RY7bh0
@@ -16,6 +17,8 @@ export const SCENES: Scene[] = [
     group: 'city',
     kind: 'image',
     src: '/scenes/night-desk.jpg',
+    thumbnail: '/scenes/thumbnails/night-desk.jpg',
+    focus: '40% 50%',
   },
   {
     // Juzzepo, https://unsplash.com/photos/SNy0Diwv0vI
@@ -24,6 +27,8 @@ export const SCENES: Scene[] = [
     group: 'cafe',
     kind: 'image',
     src: '/scenes/cozy-cafe.jpg',
+    thumbnail: '/scenes/thumbnails/cozy-cafe.jpg',
+    focus: '75% 50%',
   },
   {
     // Dejan Zakic, https://unsplash.com/photos/rr2EF3J5F2Y
@@ -32,6 +37,7 @@ export const SCENES: Scene[] = [
     group: 'nature',
     kind: 'image',
     src: '/scenes/misty-forest.jpg',
+    thumbnail: '/scenes/thumbnails/misty-forest.jpg',
   },
   {
     // panpan ma, https://unsplash.com/photos/UVdS0D3rDNM
@@ -40,6 +46,7 @@ export const SCENES: Scene[] = [
     group: 'library',
     kind: 'image',
     src: '/scenes/quiet-library.jpg',
+    thumbnail: '/scenes/thumbnails/quiet-library.jpg',
   },
   {
     // 行之LV, https://wall.alphacoders.com/big.php?i=1059120
@@ -48,6 +55,8 @@ export const SCENES: Scene[] = [
     group: 'anime',
     kind: 'image',
     src: '/scenes/sunlit-desk.jpg',
+    thumbnail: '/scenes/thumbnails/sunlit-desk.jpg',
+    focus: '40% 50%',
   },
   {
     // AniWall (AI-generated), https://aniwall.in/wallpaper/cozy-rainy-night-in-the-city
@@ -56,6 +65,8 @@ export const SCENES: Scene[] = [
     group: 'anime',
     kind: 'image',
     src: '/scenes/rainy-window.jpg',
+    thumbnail: '/scenes/thumbnails/rainy-window.jpg',
+    focus: '40% 50%',
   },
   {
     // BanhKem 236, https://unsplash.com/photos/xoKbH8VERR0
@@ -64,6 +75,8 @@ export const SCENES: Scene[] = [
     group: 'study-with-me',
     kind: 'image',
     src: '/scenes/bookshelf-cafe.jpg',
+    thumbnail: '/scenes/thumbnails/bookshelf-cafe.jpg',
+    focus: '75% 50%',
   },
   {
     id: 'midnight',
