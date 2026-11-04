@@ -40,6 +40,15 @@ export const SCENES: Scene[] = [
     thumbnail: '/scenes/thumbnails/misty-forest.jpg',
   },
   {
+    // Pexels, https://www.pexels.com/video/drops-of-water-dripping-on-a-glass-surface-2644023/
+    id: 'rainy-glass',
+    name: 'Rainy Glass',
+    group: 'nature',
+    kind: 'video',
+    src: '/scenes/videos/rainy.mp4',
+    poster: '/scenes/rainy-glass.jpg',
+  },
+  {
     // panpan ma, https://unsplash.com/photos/UVdS0D3rDNM
     id: 'quiet-library',
     name: 'Quiet Library',

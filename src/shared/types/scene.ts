@@ -17,5 +17,5 @@ export type Scene =
       focus?: string;
       fit?: 'cover' | 'contain';
     })
-  | (SceneBase & { kind: 'video'; src: string; poster: string })
+  | (SceneBase & { kind: 'video'; src: string; poster: string; focus?: string })
   | (SceneBase & { kind: 'youtube'; videoId: string });
