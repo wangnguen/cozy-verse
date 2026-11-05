@@ -17,6 +17,8 @@ const tabLabel = (tab: Tab) => (tab === 'all' ? 'All' : GROUP_LABELS[tab]);
 export const ScenePicker = () => {
   const currentSceneId = useSceneStore((state) => state.currentSceneId);
   const setCurrentSceneId = useSceneStore((state) => state.setCurrentSceneId);
+  const favoriteSceneIds = useSceneStore((state) => state.favoriteSceneIds);
+  const toggleFavorite = useSceneStore((state) => state.toggleFavorite);
   const [tab, setTab] = useState<Tab>('all');
   const [query, setQuery] = useState('');
 
@@ -80,6 +82,8 @@ export const ScenePicker = () => {
               scene={scene}
               active={currentSceneId === scene.id}
               onSelect={() => setCurrentSceneId(scene.id)}
+              favorite={favoriteSceneIds.includes(scene.id)}
+              onToggleFavorite={() => toggleFavorite(scene.id)}
             />
           ))}
         </div>
