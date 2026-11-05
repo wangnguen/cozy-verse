@@ -14,6 +14,8 @@ export type Player = {
   getPlayerState: () => PlayerStateValue;
   getIframe: () => HTMLIFrameElement;
   seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+  unloadModule?: (module: string) => void;
+  getCurrentTime: () => number;
   mute: () => void;
   destroy: () => void;
 };

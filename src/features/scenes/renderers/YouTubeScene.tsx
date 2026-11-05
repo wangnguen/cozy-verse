@@ -19,9 +19,10 @@ const PLAYER_VARS = {
   iv_load_policy: 3,
 };
 
-const REVEAL_DELAY_MS = 1000;
+const REVEAL_DELAY_MS = 500;
 
 const maxresPoster = (videoId: string) => `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+const positionKey = (videoId: string) => `cozyverse:yt-position:${videoId}`;
 
 export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -43,11 +44,32 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
       revealTimer = window.setTimeout(() => setPlaying(true), REVEAL_DELAY_MS);
     };
 
+    const savePosition = () => {
+      try {
+        if (!player) return;
+        const currentTime = Math.floor(player.getCurrentTime());
+        if (currentTime > 0) localStorage.setItem(positionKey(videoId), String(currentTime));
+      } catch (e) {
+        console.error('Error saving position', e);
+      }
+    };
+
+    const readPosition = () => {
+      try {
+        const seconds = Number(localStorage.getItem(positionKey(videoId)));
+        return Number.isFinite(seconds) ? seconds : 0;
+      } catch (e) {
+        console.error('Error reading position', e);
+        return 0;
+      }
+    };
+
     const onVisibilityChange = () => {
       if (document.hidden) cover();
       else if (player && player.getPlayerState() !== PlayerState.Playing) player.playVideo();
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('pagehide', savePosition);
 
     loadYouTubeApi()
       .then((YT) => {
@@ -55,7 +77,7 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
         player = new YT.Player(hostRef.current, {
           videoId,
           host: 'https://www.youtube-nocookie.com',
-          playerVars: PLAYER_VARS,
+          playerVars: { ...PLAYER_VARS, start: readPosition() },
           events: {
             onReady: ({ target }) => {
               const iframe = target.getIframe();
@@ -66,8 +88,12 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
               if (target.getPlayerState() !== PlayerState.Playing) target.playVideo();
             },
             onStateChange: ({ data, target }) => {
-              if (data === PlayerState.Playing && !document.hidden) revealSoon();
-              else cover();
+              if (data === PlayerState.Playing && !document.hidden) {
+                target.unloadModule?.('captions');
+                revealSoon();
+              } else {
+                cover();
+              }
               if (data === PlayerState.Ended) {
                 target.seekTo(0, true);
                 target.playVideo();
@@ -82,7 +108,9 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
     return () => {
       cancelled = true;
       document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('pagehide', savePosition);
       window.clearTimeout(revealTimer);
+      savePosition();
       player?.destroy();
       setPlaying(false);
     };
