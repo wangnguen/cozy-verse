@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { cn } from 'cn';
+import { Search } from 'lucide-react';
 
 import type { SceneGroup } from '@/shared/types/scene';
 
@@ -17,11 +18,32 @@ export const ScenePicker = () => {
   const currentSceneId = useSceneStore((state) => state.currentSceneId);
   const setCurrentSceneId = useSceneStore((state) => state.setCurrentSceneId);
   const [tab, setTab] = useState<Tab>('all');
+  const [query, setQuery] = useState('');
 
-  const visibleScenes = tab === 'all' ? SCENES : SCENES.filter((scene) => scene.group === tab);
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const visibleScenes = SCENES.filter((scene) => {
+    const matchesTab = tab === 'all' || scene.group === tab;
+    const matchesQuery = scene.name.toLowerCase().includes(normalizedQuery);
+    return matchesTab && matchesQuery;
+  });
 
   return (
     <div className="flex flex-col gap-2">
+      <div className="relative">
+        <Search
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-white/50"
+        />
+        <input
+          type="search"
+          placeholder="Search scenes..."
+          value={query}
+          aria-label="Search scenes"
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full rounded-md border border-white/20 bg-transparent py-1 pr-2 pl-8 text-sm"
+        />
+      </div>
       <div className="flex scrollbar-glass gap-1 overflow-x-auto pb-1">
         {TABS.map((item) => (
           <button
@@ -45,16 +67,23 @@ export const ScenePicker = () => {
           </button>
         ))}
       </div>
-      <div className="grid h-[60vh] scrollbar-glass grid-cols-2 content-start gap-2 overflow-y-auto p-1">
-        {visibleScenes.map((scene) => (
-          <SceneCard
-            key={scene.id}
-            scene={scene}
-            active={currentSceneId === scene.id}
-            onSelect={() => setCurrentSceneId(scene.id)}
-          />
-        ))}
-      </div>
+      {visibleScenes.length === 0 ? (
+        <div className="flex h-[60vh] flex-col items-center justify-center gap-2">
+          <img alt="" src="/illustrations/no-data.svg" className="w-32 opacity-80" />
+          <p className="text-center text-sm text-white/50">No scenes found</p>
+        </div>
+      ) : (
+        <div className="grid h-[60vh] scrollbar-glass grid-cols-2 content-start gap-2 overflow-y-auto p-1">
+          {visibleScenes.map((scene) => (
+            <SceneCard
+              key={scene.id}
+              scene={scene}
+              active={currentSceneId === scene.id}
+              onSelect={() => setCurrentSceneId(scene.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
