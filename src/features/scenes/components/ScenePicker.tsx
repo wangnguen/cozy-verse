@@ -8,11 +8,12 @@ import { GROUP_LABELS, SCENE_GROUPS, SCENES } from '../catalog';
 import { useSceneStore } from '../store/sceneStore';
 import { SceneCard } from './SceneCard';
 
-type Tab = SceneGroup | 'all';
+type Tab = SceneGroup | 'all' | 'favorites';
 
-const TABS: Tab[] = ['all', ...SCENE_GROUPS];
+const TABS: Tab[] = ['all', 'favorites', ...SCENE_GROUPS];
 
-const tabLabel = (tab: Tab) => (tab === 'all' ? 'All' : GROUP_LABELS[tab]);
+const tabLabel = (tab: Tab) =>
+  tab === 'all' ? 'All' : tab === 'favorites' ? 'Favorites' : GROUP_LABELS[tab];
 
 export const ScenePicker = () => {
   const currentSceneId = useSceneStore((state) => state.currentSceneId);
@@ -23,9 +24,15 @@ export const ScenePicker = () => {
   const [query, setQuery] = useState('');
 
   const normalizedQuery = query.trim().toLowerCase();
+  const emptyMessage =
+    tab === 'favorites' && favoriteSceneIds.length === 0
+      ? 'Tap ♥ to save scenes here'
+      : 'No scenes found';
 
   const visibleScenes = SCENES.filter((scene) => {
-    const matchesTab = tab === 'all' || scene.group === tab;
+    const matchesTab =
+      tab === 'all' ||
+      (tab === 'favorites' ? favoriteSceneIds.includes(scene.id) : scene.group === tab);
     const matchesQuery = scene.name.toLowerCase().includes(normalizedQuery);
     return matchesTab && matchesQuery;
   });
@@ -72,7 +79,7 @@ export const ScenePicker = () => {
       {visibleScenes.length === 0 ? (
         <div className="flex h-[60vh] flex-col items-center justify-center gap-2">
           <img alt="" src="/illustrations/no-data.svg" className="w-32 opacity-80" />
-          <p className="text-center text-sm text-white/50">No scenes found</p>
+          <p className="text-center text-sm text-white/50">{emptyMessage}</p>
         </div>
       ) : (
         <div className="grid h-[60vh] scrollbar-glass grid-cols-2 content-start gap-2 overflow-y-auto p-1">
