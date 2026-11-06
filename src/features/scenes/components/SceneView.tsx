@@ -1,3 +1,4 @@
+import { SCENE_KIND } from '@/shared/constants/scene';
 import type { Scene } from '@/shared/types/scene';
 
 import { ColorScene } from '../renderers/ColorScene';
@@ -6,17 +7,19 @@ import { ImageScene } from '../renderers/ImageScene';
 import { VideoScene } from '../renderers/VideoScene';
 import { YouTubeScene } from '../renderers/YouTubeScene';
 
-export const SceneView = ({ scene }: { scene: Scene }) => {
+type SceneViewProps = { scene: Scene };
+
+export const SceneView = ({ scene }: SceneViewProps) => {
   switch (scene.kind) {
-    case 'color':
+    case SCENE_KIND.COLOR:
       return <ColorScene scene={scene} />;
-    case 'gradient':
+    case SCENE_KIND.GRADIENT:
       return <GradientScene scene={scene} />;
-    case 'image':
+    case SCENE_KIND.IMAGE:
       return <ImageScene scene={scene} />;
-    case 'video':
+    case SCENE_KIND.VIDEO:
       return <VideoScene scene={scene} />;
-    case 'youtube':
+    case SCENE_KIND.YOUTUBE:
       return <YouTubeScene scene={scene} />;
   }
 };

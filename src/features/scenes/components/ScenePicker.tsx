@@ -2,19 +2,17 @@ import { useState } from 'react';
 import { cn } from 'cn';
 import { Search } from 'lucide-react';
 
-import type { SceneGroup } from '@/shared/types/scene';
+import { SCENE_GROUP } from '@/shared/constants/scene';
 
-import { GROUP_LABELS, SCENE_GROUPS, SCENES } from '../catalog';
+import { SCENE_GROUPS, SCENES } from '../catalog';
+import { EMPTY_SCENES_MESSAGE } from '../constants/messages';
+import { SCENE_TAB, SCENE_TAB_LABELS } from '../constants/tabs';
 import { useSceneStore } from '../store/sceneStore';
+import type { SceneTab } from '../types';
 import { AddSceneForm } from './AddSceneForm';
 import { SceneCard } from './SceneCard';
 
-type Tab = SceneGroup | 'all' | 'favorites';
-
-const TABS: Tab[] = ['all', 'favorites', 'custom', ...SCENE_GROUPS];
-
-const tabLabel = (tab: Tab) =>
-  tab === 'all' ? 'All' : tab === 'favorites' ? 'Favorites' : GROUP_LABELS[tab];
+const TABS: SceneTab[] = [SCENE_TAB.ALL, SCENE_TAB.FAVORITES, SCENE_GROUP.CUSTOM, ...SCENE_GROUPS];
 
 export const ScenePicker = () => {
   const currentSceneId = useSceneStore((state) => state.currentSceneId);
@@ -24,21 +22,21 @@ export const ScenePicker = () => {
   const customScenes = useSceneStore((state) => state.customScenes);
   const addCustomScene = useSceneStore((state) => state.addCustomScene);
   const removeCustomScene = useSceneStore((state) => state.removeCustomScene);
-  const [tab, setTab] = useState<Tab>('all');
+  const [tab, setTab] = useState<SceneTab>(SCENE_TAB.ALL);
   const [query, setQuery] = useState('');
 
   const normalizedQuery = query.trim().toLowerCase();
   const emptyMessage =
-    tab === 'favorites' && favoriteSceneIds.length === 0
-      ? 'Tap ♥ to save scenes here'
-      : tab === 'custom' && customScenes.length === 0
-        ? 'Paste a link above to add your own scene'
-        : 'No scenes found';
+    tab === SCENE_TAB.FAVORITES && favoriteSceneIds.length === 0
+      ? EMPTY_SCENES_MESSAGE.FAVORITES
+      : tab === SCENE_GROUP.CUSTOM && customScenes.length === 0
+        ? EMPTY_SCENES_MESSAGE.CUSTOM
+        : EMPTY_SCENES_MESSAGE.DEFAULT;
 
   const visibleScenes = [...customScenes, ...SCENES].filter((scene) => {
     const matchesTab =
-      tab === 'all' ||
-      (tab === 'favorites' ? favoriteSceneIds.includes(scene.id) : scene.group === tab);
+      tab === SCENE_TAB.ALL ||
+      (tab === SCENE_TAB.FAVORITES ? favoriteSceneIds.includes(scene.id) : scene.group === tab);
     const matchesQuery = scene.name.toLowerCase().includes(normalizedQuery);
     return matchesTab && matchesQuery;
   });
@@ -60,9 +58,9 @@ export const ScenePicker = () => {
         />
       </div>
       <AddSceneForm
-        onAdd={(parsed) => {
-          setCurrentSceneId(addCustomScene(parsed));
-          setTab('custom');
+        onAdd={(source) => {
+          setCurrentSceneId(addCustomScene(source));
+          setTab(SCENE_GROUP.CUSTOM);
           setQuery('');
         }}
       />
@@ -85,7 +83,7 @@ export const ScenePicker = () => {
               });
             }}
           >
-            {tabLabel(item)}
+            {SCENE_TAB_LABELS[item]}
           </button>
         ))}
       </div>
@@ -104,7 +102,9 @@ export const ScenePicker = () => {
               onSelect={() => setCurrentSceneId(scene.id)}
               favorite={favoriteSceneIds.includes(scene.id)}
               onToggleFavorite={() => toggleFavorite(scene.id)}
-              onRemove={scene.group === 'custom' ? () => removeCustomScene(scene.id) : undefined}
+              onRemove={
+                scene.group === SCENE_GROUP.CUSTOM ? () => removeCustomScene(scene.id) : undefined
+              }
             />
           ))}
         </div>

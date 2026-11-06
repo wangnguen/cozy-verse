@@ -1,17 +1,18 @@
+import { SCENE_KIND } from '@/shared/constants/scene';
 import type { Scene } from '@/shared/types/scene';
 
-const youtubeThumbnail = (videoId: string) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+import { YOUTUBE_THUMBNAIL, youtubeThumbnailUrl } from './constants/url';
 
 export const getSceneThumbnail = (scene: Scene): string | undefined => {
   switch (scene.kind) {
-    case 'image':
+    case SCENE_KIND.IMAGE:
       return scene.thumbnail ?? scene.src;
-    case 'video':
+    case SCENE_KIND.VIDEO:
       return scene.poster;
-    case 'youtube':
-      return youtubeThumbnail(scene.videoId);
-    case 'color':
-    case 'gradient':
+    case SCENE_KIND.YOUTUBE:
+      return youtubeThumbnailUrl(scene.videoId, YOUTUBE_THUMBNAIL.HIGH);
+    case SCENE_KIND.COLOR:
+    case SCENE_KIND.GRADIENT:
       return undefined;
   }
 };

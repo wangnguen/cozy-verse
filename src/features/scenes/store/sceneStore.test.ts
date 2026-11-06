@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { DEFAULT_SCENE_ID } from '../catalog';
+import { DEFAULT_SCENE_ID } from '../constants/scene';
 import { useSceneStore } from './sceneStore';
 
 const initialState = useSceneStore.getState();

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { Scene } from '@/shared/types/scene';
+import { STORAGE_KEY } from '@/shared/constants/app';
+import type { Scene, SceneSource } from '@/shared/types/scene';
 
-import { DEFAULT_SCENE_ID } from '../catalog';
+import { CUSTOM_SCENE_ID_PREFIX, DEFAULT_SCENE_ID } from '../constants/scene';
 import { createCustomScene, sourceKey } from '../customScene';
-import type { ParsedSceneUrl } from '../parseSceneUrl';
 
 type SceneState = {
   currentSceneId: string;
@@ -13,7 +13,7 @@ type SceneState = {
   customScenes: Scene[];
   setCurrentSceneId: (sceneId: string) => void;
   toggleFavorite: (sceneId: string) => void;
-  addCustomScene: (parsed: ParsedSceneUrl) => string;
+  addCustomScene: (source: SceneSource) => string;
   removeCustomScene: (sceneId: string) => void;
 };
 
@@ -33,12 +33,12 @@ export const useSceneStore = create<SceneState>()(
               : [...state.favoriteSceneIds, sceneId],
           };
         }),
-      addCustomScene: (parsed) => {
-        const key = sourceKey(parsed);
+      addCustomScene: (source) => {
+        const key = sourceKey(source);
         const existing = get().customScenes.find((scene) => sourceKey(scene) === key);
         if (existing) return existing.id;
 
-        const scene = createCustomScene(parsed, `custom-${crypto.randomUUID()}`);
+        const scene = createCustomScene(source, `${CUSTOM_SCENE_ID_PREFIX}${crypto.randomUUID()}`);
         set((state) => ({ customScenes: [scene, ...state.customScenes] }));
         return scene.id;
       },
@@ -50,6 +50,6 @@ export const useSceneStore = create<SceneState>()(
             state.currentSceneId === sceneId ? DEFAULT_SCENE_ID : state.currentSceneId,
         })),
     }),
-    { name: 'cozyverse:scene', version: 1 },
+    { name: STORAGE_KEY.SCENE_STORE, version: 1 },
   ),
 );

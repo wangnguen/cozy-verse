@@ -1,10 +1,20 @@
 import { cn } from 'cn';
 import { Heart, X } from 'lucide-react';
 
+import { SCENE_KIND } from '@/shared/constants/scene';
 import type { Scene } from '@/shared/types/scene';
 
 import { getSceneThumbnail } from '../thumbnail';
 import { SceneView } from './SceneView';
+
+type SceneCardProps = {
+  scene: Scene;
+  active: boolean;
+  favorite: boolean;
+  onToggleFavorite: () => void;
+  onSelect: () => void;
+  onRemove?: () => void;
+};
 
 export const SceneCard = ({
   scene,
@@ -13,14 +23,7 @@ export const SceneCard = ({
   onToggleFavorite,
   onSelect,
   onRemove,
-}: {
-  scene: Scene;
-  active: boolean;
-  favorite: boolean;
-  onToggleFavorite: () => void;
-  onSelect: () => void;
-  onRemove?: () => void;
-}) => {
+}: SceneCardProps) => {
   const thumbnail = getSceneThumbnail(scene);
 
   return (
@@ -44,7 +47,7 @@ export const SceneCard = ({
               loading="lazy"
               decoding="async"
               className="absolute inset-0 size-full object-cover"
-              style={{ objectPosition: scene.kind === 'image' ? scene.focus : undefined }}
+              style={{ objectPosition: scene.kind === SCENE_KIND.IMAGE ? scene.focus : undefined }}
             />
           ) : (
             <SceneView scene={scene} />

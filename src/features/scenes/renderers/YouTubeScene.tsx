@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { cn } from 'cn';
 
-import type { Scene } from '@/shared/types/scene';
+import { youtubePositionStorageKey } from '@/shared/constants/app';
+import type { SCENE_KIND } from '@/shared/constants/scene';
+import type { SceneOfKind } from '@/shared/types/scene';
 import { loadYouTubeApi } from '@/shared/youtube/loadYouTubeApi';
 import { PlayerState, type Player } from '@/shared/youtube/types';
 
+import { YOUTUBE_EMBED_HOST, YOUTUBE_THUMBNAIL, youtubeThumbnailUrl } from '../constants/url';
 import { getSceneThumbnail } from '../thumbnail';
 
-type YouTubeSceneProps = Extract<Scene, { kind: 'youtube' }>;
+type YouTubeSceneProps = { scene: SceneOfKind<typeof SCENE_KIND.YOUTUBE> };
 
 const PLAYER_VARS = {
   autoplay: 1,
@@ -21,10 +24,7 @@ const PLAYER_VARS = {
 
 const REVEAL_DELAY_MS = 500;
 
-const maxresPoster = (videoId: string) => `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
-const positionKey = (videoId: string) => `cozyverse:yt-position:${videoId}`;
-
-export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
+export const YouTubeScene = ({ scene }: YouTubeSceneProps) => {
   const hostRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [maxresMissing, setMaxresMissing] = useState(false);
@@ -48,7 +48,8 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
       try {
         if (!player) return;
         const currentTime = Math.floor(player.getCurrentTime());
-        if (currentTime > 0) localStorage.setItem(positionKey(videoId), String(currentTime));
+        if (currentTime > 0)
+          localStorage.setItem(youtubePositionStorageKey(videoId), String(currentTime));
       } catch (e) {
         console.error('Error saving position', e);
       }
@@ -56,7 +57,7 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
 
     const readPosition = () => {
       try {
-        const seconds = Number(localStorage.getItem(positionKey(videoId)));
+        const seconds = Number(localStorage.getItem(youtubePositionStorageKey(videoId)));
         return Number.isFinite(seconds) ? seconds : 0;
       } catch (e) {
         console.error('Error reading position', e);
@@ -76,7 +77,7 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
         if (cancelled || !hostRef.current) return;
         player = new YT.Player(hostRef.current, {
           videoId,
-          host: 'https://www.youtube-nocookie.com',
+          host: YOUTUBE_EMBED_HOST,
           playerVars: { ...PLAYER_VARS, start: readPosition() },
           events: {
             onReady: ({ target }) => {
@@ -122,7 +123,11 @@ export const YouTubeScene = ({ scene }: { scene: YouTubeSceneProps }) => {
         <div ref={hostRef} />
       </div>
       <img
-        src={maxresMissing ? getSceneThumbnail(scene) : maxresPoster(videoId)}
+        src={
+          maxresMissing
+            ? getSceneThumbnail(scene)
+            : youtubeThumbnailUrl(videoId, YOUTUBE_THUMBNAIL.MAX)
+        }
         onLoad={(event) => {
           if (event.currentTarget.naturalWidth <= 120) setMaxresMissing(true);
         }}

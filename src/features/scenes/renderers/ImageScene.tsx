@@ -1,9 +1,10 @@
-import type { Scene } from '@/shared/types/scene';
+import { IMAGE_FIT, type SCENE_KIND } from '@/shared/constants/scene';
+import type { SceneOfKind } from '@/shared/types/scene';
 
-type ImageSceneProps = Extract<Scene, { kind: 'image' }>;
+type ImageSceneProps = { scene: SceneOfKind<typeof SCENE_KIND.IMAGE> };
 
-export const ImageScene = ({ scene }: { scene: ImageSceneProps }) => {
-  if (scene.fit === 'contain') {
+export const ImageScene = ({ scene }: ImageSceneProps) => {
+  if (scene.fit === IMAGE_FIT.CONTAIN) {
     return (
       <>
         <img

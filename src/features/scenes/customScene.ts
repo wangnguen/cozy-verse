@@ -1,6 +1,7 @@
-import type { Scene } from '@/shared/types/scene';
+import { SCENE_GROUP, SCENE_KIND } from '@/shared/constants/scene';
+import type { Scene, SceneSource } from '@/shared/types/scene';
 
-import type { ParsedSceneUrl } from './parseSceneUrl';
+import { CUSTOM_SCENE_FALLBACK_NAME } from './constants/scene';
 
 const safeDecode = (value: string) => {
   try {
@@ -18,26 +19,26 @@ const fileName = (src: string) => {
     .trim();
 };
 
-const sceneName = (parsed: ParsedSceneUrl) => {
-  if (parsed.kind === 'youtube') return 'YouTube video';
-  return fileName(parsed.src) || (parsed.kind === 'image' ? 'Image' : 'Video');
+const sceneName = (source: SceneSource) => {
+  if (source.kind === SCENE_KIND.YOUTUBE) return CUSTOM_SCENE_FALLBACK_NAME[source.kind];
+  return fileName(source.src) || CUSTOM_SCENE_FALLBACK_NAME[source.kind];
 };
 
-export const sourceKey = (scene: Scene | ParsedSceneUrl): string | undefined => {
+export const sourceKey = (scene: Scene | SceneSource): string | undefined => {
   switch (scene.kind) {
-    case 'youtube':
-      return `youtube:${scene.videoId}`;
-    case 'image':
-    case 'video':
+    case SCENE_KIND.YOUTUBE:
+      return `${scene.kind}:${scene.videoId}`;
+    case SCENE_KIND.IMAGE:
+    case SCENE_KIND.VIDEO:
       return `${scene.kind}:${scene.src}`;
     default:
       return undefined;
   }
 };
 
-export const createCustomScene = (parsed: ParsedSceneUrl, id: string): Scene => ({
-  ...parsed,
+export const createCustomScene = (source: SceneSource, id: string): Scene => ({
+  ...source,
   id,
-  name: sceneName(parsed),
-  group: 'custom',
+  name: sceneName(source),
+  group: SCENE_GROUP.CUSTOM,
 });

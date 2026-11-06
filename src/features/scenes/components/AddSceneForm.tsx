@@ -1,21 +1,26 @@
 import { useId, useState, type FormEvent } from 'react';
 import { Plus } from 'lucide-react';
 
-import { parseSceneUrl, type ParsedSceneUrl } from '../parseSceneUrl';
+import type { SceneSource } from '@/shared/types/scene';
 
-export const AddSceneForm = ({ onAdd }: { onAdd: (parsed: ParsedSceneUrl) => void }) => {
+import { INVALID_SCENE_LINK_MESSAGE } from '../constants/messages';
+import { parseSceneUrl } from '../parseSceneUrl';
+
+type AddSceneFormProps = { onAdd: (source: SceneSource) => void };
+
+export const AddSceneForm = ({ onAdd }: AddSceneFormProps) => {
   const [link, setLink] = useState('');
   const [invalid, setInvalid] = useState(false);
   const errorId = useId();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const parsed = parseSceneUrl(link);
-    if (!parsed) {
+    const source = parseSceneUrl(link);
+    if (!source) {
       setInvalid(true);
       return;
     }
-    onAdd(parsed);
+    onAdd(source);
     setLink('');
   };
 
@@ -47,7 +52,7 @@ export const AddSceneForm = ({ onAdd }: { onAdd: (parsed: ParsedSceneUrl) => voi
       </div>
       {invalid && (
         <p id={errorId} role="alert" className="text-xs text-rose-300">
-          Use a YouTube link or a direct .jpg, .png, .webp, .gif, .avif, .mp4 or .webm link
+          {INVALID_SCENE_LINK_MESSAGE}
         </p>
       )}
     </form>

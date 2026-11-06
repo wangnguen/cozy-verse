@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEFAULT_SCENE_ID, getSceneById } from './catalog';
+import { getSceneById } from './catalog';
+import { DEFAULT_SCENE_ID } from './constants/scene';
 import { createCustomScene, sourceKey } from './customScene';
 
 describe('createCustomScene', () => {
