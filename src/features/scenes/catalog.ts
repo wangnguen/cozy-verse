@@ -136,12 +136,13 @@ export const GROUP_LABELS: Record<SceneGroup, string> = {
   'study-with-me': 'Study With Me',
   gradient: 'Gradient',
   color: 'Color',
+  custom: 'My scenes',
 };
 
 export const DEFAULT_SCENE_ID = 'rainy-tokyo';
 
-export const getSceneById = (sceneId: string): Scene => {
-  const currentScene = SCENES.find((scene) => scene.id === sceneId);
+export const getSceneById = (sceneId: string, customScenes: Scene[] = []): Scene => {
+  const currentScene = [...customScenes, ...SCENES].find((scene) => scene.id === sceneId);
   if (!currentScene) return SCENES.find((scene) => scene.id === DEFAULT_SCENE_ID)!;
   return currentScene;
 };

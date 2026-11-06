@@ -1,5 +1,5 @@
 import { cn } from 'cn';
-import { Heart } from 'lucide-react';
+import { Heart, X } from 'lucide-react';
 
 import type { Scene } from '@/shared/types/scene';
 
@@ -12,12 +12,14 @@ export const SceneCard = ({
   favorite,
   onToggleFavorite,
   onSelect,
+  onRemove,
 }: {
   scene: Scene;
   active: boolean;
   favorite: boolean;
   onToggleFavorite: () => void;
   onSelect: () => void;
+  onRemove?: () => void;
 }) => {
   const thumbnail = getSceneThumbnail(scene);
 
@@ -59,6 +61,16 @@ export const SceneCard = ({
       >
         <Heart className={cn('size-4', favorite && 'fill-current text-rose-400')} />
       </button>
+      {onRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={`Remove ${scene.name}`}
+          className="absolute top-2 left-2 rounded-full bg-black/30 p-1"
+        >
+          <X className="size-4" />
+        </button>
+      )}
     </div>
   );
 };

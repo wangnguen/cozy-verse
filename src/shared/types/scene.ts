@@ -1,5 +1,13 @@
 export type SceneGroup =
-  'anime' | 'cafe' | 'nature' | 'city' | 'library' | 'study-with-me' | 'gradient' | 'color';
+  | 'anime'
+  | 'cafe'
+  | 'nature'
+  | 'city'
+  | 'library'
+  | 'study-with-me'
+  | 'gradient'
+  | 'color'
+  | 'custom';
 
 type SceneBase = {
   id: string;
@@ -17,5 +25,5 @@ export type Scene =
       focus?: string;
       fit?: 'cover' | 'contain';
     })
-  | (SceneBase & { kind: 'video'; src: string; poster: string; focus?: string })
+  | (SceneBase & { kind: 'video'; src: string; poster?: string; focus?: string })
   | (SceneBase & { kind: 'youtube'; videoId: string });

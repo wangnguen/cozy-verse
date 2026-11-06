@@ -6,11 +6,12 @@ import type { SceneGroup } from '@/shared/types/scene';
 
 import { GROUP_LABELS, SCENE_GROUPS, SCENES } from '../catalog';
 import { useSceneStore } from '../store/sceneStore';
+import { AddSceneForm } from './AddSceneForm';
 import { SceneCard } from './SceneCard';
 
 type Tab = SceneGroup | 'all' | 'favorites';
 
-const TABS: Tab[] = ['all', 'favorites', ...SCENE_GROUPS];
+const TABS: Tab[] = ['all', 'favorites', 'custom', ...SCENE_GROUPS];
 
 const tabLabel = (tab: Tab) =>
   tab === 'all' ? 'All' : tab === 'favorites' ? 'Favorites' : GROUP_LABELS[tab];
@@ -20,6 +21,9 @@ export const ScenePicker = () => {
   const setCurrentSceneId = useSceneStore((state) => state.setCurrentSceneId);
   const favoriteSceneIds = useSceneStore((state) => state.favoriteSceneIds);
   const toggleFavorite = useSceneStore((state) => state.toggleFavorite);
+  const customScenes = useSceneStore((state) => state.customScenes);
+  const addCustomScene = useSceneStore((state) => state.addCustomScene);
+  const removeCustomScene = useSceneStore((state) => state.removeCustomScene);
   const [tab, setTab] = useState<Tab>('all');
   const [query, setQuery] = useState('');
 
@@ -27,9 +31,11 @@ export const ScenePicker = () => {
   const emptyMessage =
     tab === 'favorites' && favoriteSceneIds.length === 0
       ? 'Tap ♥ to save scenes here'
-      : 'No scenes found';
+      : tab === 'custom' && customScenes.length === 0
+        ? 'Paste a link above to add your own scene'
+        : 'No scenes found';
 
-  const visibleScenes = SCENES.filter((scene) => {
+  const visibleScenes = [...customScenes, ...SCENES].filter((scene) => {
     const matchesTab =
       tab === 'all' ||
       (tab === 'favorites' ? favoriteSceneIds.includes(scene.id) : scene.group === tab);
@@ -53,6 +59,13 @@ export const ScenePicker = () => {
           className="w-full rounded-md border border-white/20 bg-transparent py-1 pr-2 pl-8 text-sm"
         />
       </div>
+      <AddSceneForm
+        onAdd={(parsed) => {
+          setCurrentSceneId(addCustomScene(parsed));
+          setTab('custom');
+          setQuery('');
+        }}
+      />
       <div className="flex scrollbar-glass gap-1 overflow-x-auto pb-1">
         {TABS.map((item) => (
           <button
@@ -91,6 +104,7 @@ export const ScenePicker = () => {
               onSelect={() => setCurrentSceneId(scene.id)}
               favorite={favoriteSceneIds.includes(scene.id)}
               onToggleFavorite={() => toggleFavorite(scene.id)}
+              onRemove={scene.group === 'custom' ? () => removeCustomScene(scene.id) : undefined}
             />
           ))}
         </div>

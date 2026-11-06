@@ -6,7 +6,8 @@ import { SceneView } from './SceneView';
 
 export const SceneLayer = () => {
   const currentSceneId = useSceneStore((state) => state.currentSceneId);
-  const scene = getSceneById(currentSceneId);
+  const customScenes = useSceneStore((state) => state.customScenes);
+  const scene = getSceneById(currentSceneId, customScenes);
   const reduceMotion = useReducedMotion();
   const duration = reduceMotion ? 0 : 0.6;
 
