@@ -6,3 +6,9 @@ export const EMPTY_SCENES_MESSAGE = {
 
 export const INVALID_SCENE_LINK_MESSAGE =
   'Use a YouTube link or a direct .jpg, .png, .webp, .gif, .avif, .mp4 or .webm link';
+
+export const SCENE_SOUND_LABEL = {
+  MUTE: 'Mute scene sound',
+  UNMUTE: 'Unmute scene sound',
+  VOLUME: 'Scene volume',
+} as const;

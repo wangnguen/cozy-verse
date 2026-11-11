@@ -8,6 +8,7 @@ import { loadYouTubeApi } from '@/shared/youtube/loadYouTubeApi';
 import { PlayerState, type Player } from '@/shared/youtube/types';
 
 import { YOUTUBE_EMBED_HOST, YOUTUBE_THUMBNAIL, youtubeThumbnailUrl } from '../constants/url';
+import { useSceneStore } from '../store/sceneStore';
 import { getSceneThumbnail } from '../thumbnail';
 
 type YouTubeSceneProps = { scene: SceneOfKind<typeof SCENE_KIND.YOUTUBE> };
@@ -24,8 +25,20 @@ const PLAYER_VARS = {
 
 const REVEAL_DELAY_MS = 500;
 
+const applySound = (player: Player, soundOn: boolean, volume: number) => {
+  if (!soundOn) {
+    player.mute();
+    return;
+  }
+  player.unMute();
+  player.setVolume(volume);
+};
+
 export const YouTubeScene = ({ scene }: YouTubeSceneProps) => {
+  const soundOn = useSceneStore((state) => state.soundOn);
+  const volume = useSceneStore((state) => state.volume);
   const hostRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<Player | null>(null);
   const [playing, setPlaying] = useState(false);
   const [maxresMissing, setMaxresMissing] = useState(false);
   const { videoId, name } = scene;
@@ -85,7 +98,9 @@ export const YouTubeScene = ({ scene }: YouTubeSceneProps) => {
               iframe.tabIndex = -1;
               iframe.title = name;
               iframe.setAttribute('aria-hidden', 'true');
-              target.mute();
+              playerRef.current = target;
+              const sound = useSceneStore.getState();
+              applySound(target, sound.soundOn, sound.volume);
               if (target.getPlayerState() !== PlayerState.Playing) target.playVideo();
             },
             onStateChange: ({ data, target }) => {
@@ -112,10 +127,15 @@ export const YouTubeScene = ({ scene }: YouTubeSceneProps) => {
       window.removeEventListener('pagehide', savePosition);
       window.clearTimeout(revealTimer);
       savePosition();
+      playerRef.current = null;
       player?.destroy();
       setPlaying(false);
     };
   }, [videoId, name]);
+
+  useEffect(() => {
+    if (playerRef.current) applySound(playerRef.current, soundOn, volume);
+  }, [soundOn, volume]);
 
   return (
     <div className="absolute inset-0 overflow-hidden">

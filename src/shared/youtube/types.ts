@@ -17,6 +17,8 @@ export type Player = {
   unloadModule?: (module: string) => void;
   getCurrentTime: () => number;
   mute: () => void;
+  unMute: () => void;
+  setVolume: (volume: number) => void;
   destroy: () => void;
 };
 

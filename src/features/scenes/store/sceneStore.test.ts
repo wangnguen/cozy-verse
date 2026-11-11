@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { DEFAULT_SCENE_ID } from '../constants/scene';
+import {
+  DEFAULT_SCENE_ID,
+  DEFAULT_SOUND_VOLUME,
+  MAX_SOUND_VOLUME,
+  MIN_SOUND_VOLUME,
+} from '../constants/scene';
 import { useSceneStore } from './sceneStore';
 
 const initialState = useSceneStore.getState();
@@ -48,5 +53,34 @@ describe('custom scenes', () => {
     useSceneStore.getState().setCurrentSceneId('navy');
     removeCustomScene(addCustomScene(image));
     expect(useSceneStore.getState().currentSceneId).toBe('navy');
+  });
+});
+
+describe('scene sound', () => {
+  beforeEach(() => {
+    useSceneStore.setState(initialState, true);
+  });
+
+  it('starts muted at the default volume', () => {
+    const { soundOn, volume } = useSceneStore.getState();
+    expect(soundOn).toBe(false);
+    expect(volume).toBe(DEFAULT_SOUND_VOLUME);
+  });
+
+  it('toggles sound on and off', () => {
+    const { toggleSound } = useSceneStore.getState();
+    toggleSound();
+    expect(useSceneStore.getState().soundOn).toBe(true);
+    toggleSound();
+    expect(useSceneStore.getState().soundOn).toBe(false);
+  });
+
+  it.each([
+    [70, 70],
+    [150, MAX_SOUND_VOLUME],
+    [-5, MIN_SOUND_VOLUME],
+  ])('clamps volume %i to %i', (input, expected) => {
+    useSceneStore.getState().setVolume(input);
+    expect(useSceneStore.getState().volume).toBe(expected);
   });
 });

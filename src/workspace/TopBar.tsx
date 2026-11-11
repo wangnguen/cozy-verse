@@ -1,6 +1,7 @@
 import { EyeOff } from 'lucide-react';
 
 import { GlassSurface } from '@/components/ui/GlassSurface';
+import { SceneSoundControl } from '@/features/scenes';
 
 import { useWorkspaceStore } from './workspaceStore';
 
@@ -15,14 +16,17 @@ export const TopBar = () => {
         <img src="/brand/cozyverse-mark.png" alt="" width={32} height={32} className="size-8" />
         <span>CozyVerse</span>
       </div>
-      <button
-        type="button"
-        aria-label="Zen mode"
-        onClick={toggleZen}
-        className="rounded-full p-1 hover:bg-white/10"
-      >
-        <EyeOff className="size-4" />
-      </button>
+      <div className="flex items-center gap-2">
+        <SceneSoundControl />
+        <button
+          type="button"
+          aria-label="Zen mode"
+          onClick={toggleZen}
+          className="rounded-full p-1 hover:bg-white/10"
+        >
+          <EyeOff className="size-4" />
+        </button>
+      </div>
     </GlassSurface>
   );
 };
