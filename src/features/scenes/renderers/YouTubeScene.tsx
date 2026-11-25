@@ -79,9 +79,13 @@ export const YouTubeScene = ({ scene }: YouTubeSceneProps) => {
     };
 
     const onVisibilityChange = () => {
-      if (document.hidden) cover();
-      else if (player && player.getPlayerState() !== PlayerState.Playing) player.playVideo();
+      if (document.hidden) return;
+      const ready = playerRef.current;
+      if (!ready) return;
+      if (ready.getPlayerState() === PlayerState.Playing) revealSoon();
+      else ready.playVideo();
     };
+
     document.addEventListener('visibilitychange', onVisibilityChange);
     window.addEventListener('pagehide', savePosition);
 
